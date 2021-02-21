@@ -1,4 +1,4 @@
-# ITP405 Assignment 1
+# ITP405 Laravel App
 
 ### Jason Feuerstein
 
