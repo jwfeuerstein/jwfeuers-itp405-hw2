@@ -17,6 +17,7 @@
                         <a class="nav-link" href="{{route('album.index')}}">Albums</a>
                         <a class="nav-link" href="{{route('playlists.pindex')}}">Playlists</a>
                         <a class="nav-link" href="{{route('tracks.index')}}">Tracks</a>
+                        <a class="nav-link" href="{{route('eloquent.index')}}">Albums (Eloquent)</a>
                     </li>
                 </ul>
             </div>
