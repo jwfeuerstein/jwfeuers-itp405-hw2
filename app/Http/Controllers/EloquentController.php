@@ -11,13 +11,8 @@ class EloquentController extends Controller
     public function index()
     {
         $albums = Album::with('artist')
-            // NOTE: I chose not to order by artist name because when I do, it replaces the album's id with
-            // the artist's id, which caused problems when trying to edit albums. I tried to find a solution
-            // or way around this but was not able to. 
-
-            //->join('artists', 'artists.id', '=', 'albums.artist_id')
-            //->orderBy('artists.name')
-            ->get();
+            ->get()
+            ->sortBy('artist.name');
         return view('eloquent.index', [
             'albums' => $albums,
         ]);
