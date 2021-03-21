@@ -13,18 +13,51 @@
             <div class="col-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{route('invoice.index')}}">Invoices</a>
+                        <a class="nav-link" href="{{route('invoice.index')}}">Invoices</a>                  
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{route('album.index')}}">Albums</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{route('playlists.pindex')}}">Playlists</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{route('tracks.index')}}">Tracks</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{route('eloquent.index')}}">Albums (Eloquent)</a>
                     </li>
+                    
+                    @if (Auth::check())
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('profile.index')}}">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post" action="{{ route('auth.logout') }}">
+                                 @csrf
+                                <button type="submit" class="btn btn-link">Logout</button>
+                            </form>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('registration.index')}}">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('auth.loginForm')}}">Login</a>
+                        </li>
+                    @endif
+                    
                 </ul>
             </div>
             <div class="col-9">
                 <header>
                     <h2>@yield('title')</h2>
                 </header>
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
                 <main>
                     @if (session('success'))
                         <div class="alert alert-success" role="alert">
