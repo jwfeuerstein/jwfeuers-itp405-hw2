@@ -31,12 +31,14 @@
                 <td>
                     {{$album ->user}}
                 </td>
+                @if(Auth::check())
                 @if((Auth::user()->id === $album->userId) || (Auth::user()->role->slug === 'admin'))
                 <td>
                     <a href="{{route('album.edit', [ 'id' => $album->id ])}}">
                         Edit
                     </a>
                 </td>
+                @endif
                 @endif
             </tr>
             @endforeach
