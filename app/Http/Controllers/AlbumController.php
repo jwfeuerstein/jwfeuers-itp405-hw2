@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use App\Models\Album;
 
 class AlbumController extends Controller
 {
@@ -11,12 +14,15 @@ class AlbumController extends Controller
     {
         $albums = DB::table('albums')
             ->join('artists', 'artists.id', '=', 'albums.artist_id')
+            ->join('users', 'users.id', '=', 'albums.user_id')
             ->orderBy('artist')
             ->orderBy('title')
             ->get([
                 'albums.id',
                 'albums.title',
-                'artists.name AS artist'
+                'artists.name AS artist',
+                'users.name AS user',
+                'users.id AS userId'
             ]);
         return view('album.index', [
             'albums' => $albums,
@@ -49,6 +55,7 @@ class AlbumController extends Controller
         DB::table('albums')->insert([
             'title' => $request->input('title'),
             'artist_id' => $request->input('artist'),
+            'user_id' => Auth::user()->id
         ]);
 
         return redirect()
@@ -61,7 +68,12 @@ class AlbumController extends Controller
         $artists = DB::table('artists')
             ->orderBy('name')
             ->get();
-        $album = DB::table('albums')->where('id', '=', $id)->first();
+        //$album = DB::table('albums')->where('id', '=', $id)->first();
+        $album = Album::find($id);
+        if (Gate::denies('edit-album', $album)) {
+            abort(403);
+        }
+
         return view('album.edit', [
             'artists' => $artists,
             'album' => $album
@@ -73,6 +85,11 @@ class AlbumController extends Controller
             'title' => 'required|max:50',
             'artist' => 'required|exists:artists,id'
         ]);
+
+        $album = Album::find($id);
+        if (Gate::denies('edit-album', $album)) {
+            abort(403);
+        }
 
         DB::table('albums')->where('id', '=', $id)->update([
             'title' => $request->input('title'),
