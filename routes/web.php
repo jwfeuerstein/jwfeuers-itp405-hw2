@@ -11,7 +11,14 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MaintenanceController;
+use App\Jobs\SendStatistics;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewAlbum;
+use App\Models\Album;
+use App\Models\Artist;
+use App\Models\Playlist;
+use App\Models\Track;
 
 if (env('APP_ENV') !== 'local') {
     URL::forceScheme('https');
@@ -28,6 +35,49 @@ if (env('APP_ENV') !== 'local') {
 |
 */
 
+/*
+Route::get('/mail', function () {
+    //Mail::raw('What is your favorite framework?', function ($message) {
+    //    $message->to('jwfeuers@usc.edu')->subject('Hello David');
+    //});
+
+    //$someAlbum = Album::first();
+    //Mail::to('dtang@usc.edu')->send(new NewAlbum($someAlbum));
+
+    //$jaggedLittlePill = Album::find(6);
+    //Mail::to('itp@usc.edu')->queue(new NewAlbum($jaggedLittlePill));
+
+    $numArtists = Artist::count();
+    $numPlaylists = Playlist::count();
+    $tracks = Track::all();
+    $totalTime = 0;
+    foreach ($tracks as $track) {
+        $totalTime = $totalTime + $track->milliseconds;
+    }
+
+    $totalTime = round(($totalTime / 60000), 0);
+
+    //$jaggedLittlePill = Album::find(6);
+    SendStatistics::dispatch($numArtists, $numPlaylists, $totalTime);
+});
+*/
+Route::post('/stats', function () {
+    $numArtists = Artist::count();
+    $numPlaylists = Playlist::count();
+    $tracks = Track::all();
+    $totalTime = 0;
+    foreach ($tracks as $track) {
+        $totalTime = $totalTime + $track->milliseconds;
+    }
+
+    $totalTime = round(($totalTime / 60000), 0);
+
+    SendStatistics::dispatch($numArtists, $numPlaylists, $totalTime);
+
+    return redirect()
+        ->route('maintenance.admin')
+        ->with('success', "Sent statistics email to all users.");
+})->name('email.stats');
 
 
 Route::get('/login', [AuthController::class, 'loginForm'])->name('auth.loginForm');
