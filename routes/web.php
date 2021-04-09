@@ -61,6 +61,9 @@ Route::get('/mail', function () {
     SendStatistics::dispatch($numArtists, $numPlaylists, $totalTime);
 });
 */
+
+
+
 Route::post('/stats', function () {
     $numArtists = Artist::count();
     $numPlaylists = Playlist::count();
